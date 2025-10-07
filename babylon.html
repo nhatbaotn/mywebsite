@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Babylon.js Demo</title>
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <style>
+      html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: #000;
+      }
+      canvas {
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+      #loading {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-family: sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loading">⏳ Đang tải Babylon.js...</div>
+    <canvas id="renderCanvas"></canvas>
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        const canvas = document.getElementById("renderCanvas");
+        const engine = new BABYLON.Engine(canvas, true);
+        const scene = new BABYLON.Scene(engine);
+        scene.clearColor = new BABYLON.Color3(0, 0, 0);
+
+        const camera = new BABYLON.ArcRotateCamera(
+          "Camera",
+          Math.PI / 2,
+          Math.PI / 3,
+          4,
+          BABYLON.Vector3.Zero(),
+          scene
+        );
+        camera.attachControl(canvas, true);
+
+        const light = new BABYLON.HemisphericLight(
+          "light",
+          new BABYLON.Vector3(1, 1, 0),
+          scene
+        );
+        light.intensity = 0.9;
+
+        const sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 2}, scene);
+        const mat = new BABYLON.StandardMaterial("mat", scene);
+        mat.diffuseColor = new BABYLON.Color3(0.2, 0.6, 1);
+        mat.emissiveColor = new BABYLON.Color3(0.1, 0.2, 0.5);
+        sphere.material = mat;
+
+        engine.runRenderLoop(() => {
+          sphere.rotation.y += 0.01;
+          scene.render();
+        });
+
+        window.addEventListener("resize", () => engine.resize());
+        document.getElementById("loading").style.display = "none";
+      });
+    </script>
+  </body>
+</html>
